@@ -182,22 +182,38 @@ FormNo:
             cmp cx,0
             jne FormNo
             ret   
+View:
+    mov ax, dx
+    mov bx, 10
+    mov cx, 0
+    mov si, 0        
+    mov di, 0        
 
-View:       
-            mov ax,dx
-            mov dx,0
-            div cx 
-            call ViewNo
-            mov bx,dx 
-            mov dx,0
-            mov ax,cx 
-            mov cx,10
-            div cx
-            mov dx,bx 
-            mov cx,ax
-            cmp ax,0
-            jne View
-            ret
+SaveDigits:
+    xor dx, dx
+    div bx
+    push dx          
+    inc si
+    cmp ax, 0
+    jne SaveDigits
+
+PrintDigits:
+    pop dx
+    cmp dx, 0
+    jne NotZero
+    cmp di, 0
+    je SkipZero
+NotZero:
+    add dl, '0'
+    mov ah, 2
+    int 21h
+    mov di, 1
+SkipZero:
+    dec si
+    cmp si, 0
+    jne PrintDigits
+    ret
+
 
 ViewNo:     
             push ax
